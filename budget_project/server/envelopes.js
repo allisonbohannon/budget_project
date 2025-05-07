@@ -47,4 +47,15 @@ envelopesRouter.post('', checkInputs, (req, res, next) => {
     res.status(201).send(newEnvelope)
 })
 
+//Change money in envelope
+envelopesRouter.put('/:envelopeId', (req, res, next) => {
+    const envelope = envelopes.find(item => item.id === Number(req.params.envelopeId))
+    if (envelope.budget - req.body.budget < 0 ) {
+        res.status(404).send('You spent too much!')
+    } else {
+        envelope.budget -= req.body.budget; 
+        res.send(envelope)
+    }
+})
+
 module.exports = envelopesRouter; 
