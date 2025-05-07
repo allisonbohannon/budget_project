@@ -11,8 +11,6 @@ app.get('/', (req, res, next) => {
 const bodyParser = require('body-parser'); 
 app.use(bodyParser.json())
 
-const cors = require('cors'); 
-app.use(cors())
 
 //Import Envelopes Router
 const envelopesRouter = require('./server/envelopes')

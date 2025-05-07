@@ -18,7 +18,7 @@ const envelopes = [
 
 //Validation middleware
 const checkInputs = (req, res, next) => {
-    if (req.params.title && req.params.budget && typeof req.params.buget === 'number') {
+    if (req.body.title && req.body.budget && typeof req.body.budget === 'number') {
         next();
     } else {
         res.status(400).send('Improper inputs')
@@ -28,8 +28,8 @@ const checkInputs = (req, res, next) => {
 envelopesRouter.get('', (req, res, next) => {
     res.send(envelopes)
 })
-envelopesRouter.post('', (req, res, next) => {
-    res.send(req)
+envelopesRouter.post('', checkInputs, (req, res, next) => {
+    res.send(req.body)
 })
 
 module.exports = envelopesRouter; 
