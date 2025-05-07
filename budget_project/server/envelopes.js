@@ -25,15 +25,24 @@ const checkInputs = (req, res, next) => {
     }
 }
 
+const findIndex = (req, res, next) => {
+    const index = envelopes.findIndex(item => item.id === Number(req.params.envelopeId))
+    if (index === -1) {
+        res.status(404).send('Envelope not found')
+    } else {
+        req.index = index; 
+        next(); 
+    }
+}
+
 //Get all envelopes
 envelopesRouter.get('', (req, res, next) => {
     res.send(envelopes)
 })
 
 //Get envelope by ID
-envelopesRouter.get('/:envelopeId', (req, res, next) => {
-    const envelope = envelopes.find(item => item.id === Number(req.params.envelopeId))
-    res.send(envelope)
+envelopesRouter.get('/:envelopeId', findIndex, (req, res, next) => {
+    res.send(envelopes[req.index])
 })
 
 //Create new envelope
@@ -48,14 +57,20 @@ envelopesRouter.post('', checkInputs, (req, res, next) => {
 })
 
 //Change money in envelope
-envelopesRouter.put('/:envelopeId', (req, res, next) => {
-    const envelope = envelopes.find(item => item.id === Number(req.params.envelopeId))
+envelopesRouter.put('/:envelopeId', findIndex, (req, res, next) => {
+    const envelope = envelopes[req.index]
     if (envelope.budget - req.body.budget < 0 ) {
         res.status(404).send('You spent too much!')
     } else {
         envelope.budget -= req.body.budget; 
         res.send(envelope)
     }
+})
+
+//Delete an envelope
+envelopesRouter.delete('/:envelopeId', (req, res, next) => {
+    envelopes.splice(req.index, 1)
+    res.status(204).send()
 })
 
 module.exports = envelopesRouter; 
